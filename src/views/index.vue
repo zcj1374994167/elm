@@ -1,21 +1,5 @@
 <template>
-  <div>
-    
-    <div class="tab">
-      <div class="tab-item">
-        <router-link to="/goods">商品</router-link>
-      </div>
-      <div class="tab-item">
-        <router-link to="/ratings">评论</router-link>
-      </div>
-      <div class="tab-item">
-        <router-link to="/seller">商家</router-link>
-      </div>
-    </div>
-    <keep-alive>
-      <router-view :seller="seller"></router-view>
-    </keep-alive>
-  </div>
+<div class="content"></div>
 </template>
 
 <script>
