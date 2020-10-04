@@ -1,12 +1,16 @@
 <template>
-<div class="content"></div>
+  <div class="content">
+  </div>
 </template>
 
 <script>
+import { Icon, Switch } from "vant";
 export default {
   data() {
     //这里存放数据
-    return {};
+    return {
+      checked: true,
+    };
   },
   //监听属性 类似于data概念
   computed: {},
@@ -25,6 +29,10 @@ export default {
   beforeDestroy() {}, //生命周期 - 销毁之前
   destroyed() {}, //生命周期 - 销毁完成
   activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
+  components: {
+    [Icon.name]: Icon,
+    [Switch.name]: Switch,
+  },
 };
 </script>
 <style lang='scss' scoped>
