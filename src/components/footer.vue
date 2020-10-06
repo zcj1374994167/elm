@@ -1,17 +1,20 @@
 <template>
   <div class="footer">
     <div class="left">
-      <span class="icon"></span>
+      <span class="icon">
+        <van-icon name="shopping-cart" size="40" badge="" />
+      </span>
       <span class="totle">￥<span>0</span>元</span>
-      <span class="peisong">另需要配送费￥<span>4</span>元</span>
+      <span class="postprice">另需要配送费￥<span>4</span>元</span>
     </div>
     <div class="right">
-      <span>￥15起送</span>
+      <span class="starprice">￥<span>15</span>起送</span>
     </div>
   </div>
 </template>
 
 <script>
+import { Icon } from 'vant';
 export default {
   data() {
     //这里存放数据
@@ -36,6 +39,9 @@ export default {
   beforeDestroy() {}, //生命周期 - 销毁之前
   destroyed() {}, //生命周期 - 销毁完成
   activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
+  components: {
+    [Icon.name]: Icon
+  }
 };
 </script>
 <style lang='scss' scoped>
@@ -62,10 +68,11 @@ export default {
       color: #80858a;
       line-height: 44px;
       font-weight: 700;
+
     }
     .totle {
       position: relative;
-      top: -5px;
+      top: -10px;
       left: 5px;
       display: inline-block;
       font-size: 16px;
@@ -77,9 +84,9 @@ export default {
       line-height: 24px;
       border-right: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .peisong {
+    .postprice {
       position: relative;
-      top: -5px;
+      top: -10px;
       left: 5px;
       display: inline-block;
       margin: 12px 0 0 12px;

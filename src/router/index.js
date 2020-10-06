@@ -13,7 +13,24 @@ const router=new VueRouter({
         {
             path:'/index',
             name:'index',
-            component:()=>import('../views/index.vue')
+            component:()=>import('../views/index.vue'),
+            children:[
+                {
+                    path:'product',
+                    name:'product',
+                    component:()=>import('../views/product/index.vue')
+                },
+                {
+                    path:'comment',
+                    name:'comment',
+                    component:()=>import('../views/comment/index.vue')
+                },
+                {
+                    path:'store',
+                    name:'store',
+                    component:()=>import('../views/store/index.vue')
+                }
+            ],
         }
     ],
     
