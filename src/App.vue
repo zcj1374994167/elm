@@ -2,7 +2,7 @@
   <div id="app">
     <Header></Header>
     <router-view></router-view>
-    <Footer></Footer>
+    <Footer v-show="$route.meta.showFooter"></Footer>
   </div>
 </template>
 
@@ -20,7 +20,9 @@ export default {
 
 <style>
 #app{
-  height: 100%;
-  width: 100%;
+  /* height: 100%; */
+  height: 736px;
+  display: flex;
+  flex-direction: column;
 }
 </style>

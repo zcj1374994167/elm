@@ -64,10 +64,11 @@ export default {
 </script>
 <style lang='scss' scoped>
 .header {
-  position: relative;
+  height: 136px;
+  // position: relative;
   background: rgba(7, 17, 27, 0.5);
-  color: #fff;
-  overflow: hidden;
+  // color: #fff;
+  // overflow: hidden;
   .header-wrap {
     position: relative;
     display: flex;

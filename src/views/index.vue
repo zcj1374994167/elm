@@ -1,10 +1,12 @@
 <template>
   <div class="content">
-    <van-tabs v-model="active" title-active-color="red" line-width="0" line-height="0">
-      <van-tab title="商品" to='/index/product'></van-tab>
-      <van-tab title="评论" to='/index/comment'></van-tab>
-      <van-tab title="商家" to='/index/store'></van-tab>
-    </van-tabs>
+    <div class="nav">
+      <van-tabs v-model="active" title-active-color="red" line-width="0" line-height="0">
+        <van-tab title="商品" to='/index/product'></van-tab>
+        <van-tab title="评论" to='/index/comment'></van-tab>
+        <van-tab title="商家" to='/index/store'></van-tab>
+      </van-tabs>
+    </div>
     <router-view></router-view>
   </div>
 </template>
@@ -42,4 +44,13 @@ export default {
 };
 </script>
 <style lang='scss' scoped>
+.content{
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  .nav{
+    height: 44px;
+  }
+}
 </style>

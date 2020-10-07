@@ -13,12 +13,16 @@ const router=new VueRouter({
         {
             path:'/index',
             name:'index',
+            redirect:'/index/product',
             component:()=>import('../views/index.vue'),
             children:[
                 {
                     path:'product',
                     name:'product',
-                    component:()=>import('../views/product/index.vue')
+                    component:()=>import('../views/product/index.vue'),
+                    meta: {
+                        showFooter: true
+                    },
                 },
                 {
                     path:'comment',
