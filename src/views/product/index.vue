@@ -14,29 +14,30 @@
     </div>
     <div class="product-r" ref="right">
       <ul ref="r_item" class="prolist">
-        <li>
-          <h1>1111</h1>
+        <li class="right-item-hook" v-for="(items, index) in goods" :key="index">
+          <h1>{{ items.name }}</h1>
           <ul>
-            <li>
+            <li v-for="(item, index) in items.foods" :key="index">
               <div class="pic">
-                <img
-                  src="http://fuss10.elemecdn.com/c/cd/c12745ed8a5171e13b427dbc39401jpeg.jpeg?imageView2/1/w/114/h/114"
-                  alt=""
-                />
+                <img :src="item.image" alt="" />
               </div>
               <div class="content">
-                <h2>皮蛋廋肉粥</h2>
-                <p class="description">咸粥</p>
+                <h2>{{ item.name }}</h2>
+                <p class="description">{{ item.description }}</p>
                 <div class="sell-info">
-                  <span class="sellCount">月售100份</span>
-                  <span class="rating">好评率99%</span>
+                  <span class="sellCount">月售{{ item.sellCount }}份</span>
+                  <span class="rating">好评率{{ item.rating }}%</span>
                 </div>
                 <div class="price">
-                  <span class="newPrice"><span class="unit">￥</span>30</span>
-                  <span class="oldPrice">￥50</span>
+                  <span class="newPrice"><span class="unit">￥</span>{{ item.price }}</span >
+                  <span class="oldPrice" v-if="oldPrice" >￥{{ item.oldPrice }}</span>
                 </div>
                 <div class="add">
-                  <!-- <van-stepper v-model="value" theme="round" button-size="22" disable-input show-minus="false" /> -->
+                  <!-- <van-stepper v-if="item.flag" v-model="item.num" theme="round" button-size="22" @plus="add(item.num)" />
+                  <span v-else @click="item.flag=true">+</span> -->
+                  <span v-show="item.num>0" @click="decrease(item,$event)">-</span>
+                  <input v-show="item.num>0" type="text" :value="item.num">
+                  <span @click="add(item,$event)">+</span>
                 </div>
               </div>
             </li>
@@ -49,57 +50,126 @@
 
 <script>
 import { Stepper } from "vant";
-// import BScroll from 'better-scroll'
+import BScroll from 'better-scroll'
 import axios from "axios";
 export default {
   data() {
     //这里存放数据
     return {
-      value:1,
+      value: 1,
+      oldPrice: false,
       currentIndex: 0,
       goods: [],
+      scrollY: 0,
+      tops: [],
+      clickEvent: false,
+      count:0
     };
   },
   //监听属性 类似于data概念
   computed: {},
   //监控data中的数据变化
-  watch: {},
+  watch: {
+    
+  },
   //方法集合
   methods: {
+    _initScrollY() {
+      // 创建左侧滑动
+      this.lefts = new BScroll(this.$refs.left, {
+        click: true,
+      });
+      //创建右侧滑动
+      this.rights = new BScroll(this.$refs.right, {
+        click: true,
+        probeType: 3,
+      });
+
+      // 给右侧绑定的BScroll绑定监听事件，获取滑动过程中的位置
+      this.rights.on("scroll", (pos) => {
+        // console.log(pos)
+        this.scrollY = Math.abs(Math.round(pos.y));
+        this.nowIndex(this.scrollY);
+      });
+    },
+
+    _initTops() {
+      var tops = [];
+      let top = 0;
+      tops[0] = 0;
+      var lis = this.$refs.r_item.children; //获取到子元素的每个li
+      // Array.protoype.slice.call(lis) 将具有length属性的对象转成数组
+      Array.prototype.slice.call(lis).forEach((li) => {
+        // console.log(index);index
+        top = top + li.clientHeight; //当前的位置=上一个的位置+这个的高度
+        tops.push(top);
+      });
+      this.tops = tops;
+    },
+
+    //nowIndex 右联左
+    nowIndex(scrollY) {
+      for (let i = 0; i < this.tops.length; i++) {
+        if (scrollY >= this.tops[i] && scrollY < this.tops[i + 1]) {
+          this.currentIndex = i;
+        }
+      }
+    },
+
     selectItem(index, event) {
       this.currentIndex = index;
       this.clickEvent = true;
-      console.log(this.currentIndex);
-      return event;
-      // console.log(event);
-      // if (!event._constructed) {
-      //   return;
-      // } else {
-      //   let rightItems = this.$refs.right.getElementsByClassName(
-      //     "right-item-hook"
-      //   );
-      //   let el = rightItems[index];
-      //   this.rights.scrollToElement(el, 300);
-      // }
+      if (!event._constructed) {
+        return;
+      } else {
+        let rightItems = this.$refs.right.getElementsByClassName("right-item-hook");
+        let el = rightItems[index];
+        this.rights.scrollToElement(el, 300);
+      }
     },
+    
+    add(item,event){
+      // console.log(event.target);
+      if (!event._constructed) {
+        return
+      }
+      item.num++;
+      console.log(this.goods)
+    },
+    decrease(item,event){
+      // console.log(event.target);
+      if (!event._constructed) {
+        return
+      }
+      item.num--;
+    }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    axios.get("http://localhost:3333/getdata").then((res) => {
-      this.goods = res.data.list.goods;
-      console.log(this.goods);
-      // this.$nextTick(() => {
-      //   this._initScroll(); // 初始化scroll
-      //   this._calculateHeight(); // 初始化列表高度列表
-      // })
+    axios.get("/api/seller").then((res) => {
+      this.goods = res.data.data.goods;
+      this.goods.forEach(items=>{
+        items.foods.forEach(item=>{
+          item.num= 0;
+          // item.flag=false
+        })
+      })
+      // console.log(this.goods)
     });
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {},
+  mounted() {
+    setTimeout(() => {
+      this._initScrollY();
+      this._initTops();
+    }, 20);
+  },
   beforeCreate() {}, //生命周期 - 创建之前
   beforeMount() {}, //生命周期 - 挂载之前
   beforeUpdate() {}, //生命周期 - 更新之前
-  updated() {}, //生命周期 - 更新之后
+  updated() {
+    
+  }, //生命周期 - 更新之后
   beforeDestroy() {}, //生命周期 - 销毁之前
   destroyed() {}, //生命周期 - 销毁完成
   activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
@@ -218,6 +288,23 @@ export default {
                 position: absolute;
                 right: 0;
                 bottom: 20px;
+                span{
+                  display: inline-block;
+                  height: 20px;
+                  width: 20px;
+                  border-radius: 10px;
+                  background: skyblue;
+                  color: white;
+                  text-align: center;
+                  line-height: 20px;
+                  font-size: 16px;
+                }
+                input{
+                  width: 20px;
+                  height: 20px;
+                  border: none;
+                  text-align: center;
+                }
               }
             }
           }
